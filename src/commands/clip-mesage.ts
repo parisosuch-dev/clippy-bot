@@ -12,7 +12,6 @@ export async function execute(interaction: Interaction) {
   if (interaction instanceof MessageContextMenuCommandInteraction) {
     // Get the message being right-clicked on
     const message = interaction.targetMessage;
-    console.log(message.content);
 
     try {
       // TODO: clip message
