@@ -14,7 +14,13 @@ if (!CLIENT_ID) {
   throw new Error("DISCORD_CLIENT_ID env variable required.");
 }
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
+});
 
 client.commands = new Collection();
 
@@ -44,8 +50,6 @@ for (const folder of commandFolders) {
 const commands = client.commands.map((command) => command.data.toJSON());
 const rest = new REST({ version: "10" }).setToken(TOKEN);
 
-console.log(commands);
-
 (async () => {
   try {
     console.log("Started refreshing application (/) commands.");
@@ -63,7 +67,6 @@ client.once(Events.ClientReady, (readyClient) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
   const command = interaction.client.commands.get(interaction.commandName);
 
   if (!command) {
