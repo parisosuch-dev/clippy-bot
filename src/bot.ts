@@ -20,8 +20,11 @@ client.on("interactionCreate", async (interaction) => {
     return;
   }
   const { commandName } = interaction;
+
   if (commands[commandName as keyof typeof commands]) {
     commands[commandName as keyof typeof commands].execute(interaction);
+  } else {
+    interaction.reply("There was an error finding the command to execute.");
   }
 });
 
