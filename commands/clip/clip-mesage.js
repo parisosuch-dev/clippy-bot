@@ -13,7 +13,7 @@ module.exports = {
       console.log(message.content);
 
       try {
-        // Pin the message
+        // TODO: clip message
         interaction.reply({
           content: "The message has been clipped!",
           ephemeral: true,
