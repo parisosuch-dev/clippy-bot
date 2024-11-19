@@ -1,7 +1,7 @@
 {
-  "name": "pincord-bot",
+  "name": "clippy-bot",
   "version": "1.0.0",
-  "description": "Discord bot that adds more pins to discord servers.",
+  "description": "Discord bot that adds more pins to discord servers, called 'clips'.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
