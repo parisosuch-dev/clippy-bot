@@ -31,6 +31,14 @@ export async function execute(interaction: Interaction) {
     // Get the message being right-clicked on
     const message = interaction.targetMessage;
 
+    if (message.attachments.size > 0) {
+      interaction.reply({
+        content: "Clipping messages with attachments is not supported yet.",
+        ephemeral: true,
+      });
+      return;
+    }
+
     try {
       const exists = await messageExists(message);
 
