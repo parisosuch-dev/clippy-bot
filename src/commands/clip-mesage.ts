@@ -17,8 +17,6 @@ export async function execute(interaction: Interaction) {
     try {
       // TODO: check if message already exists in db
 
-      // TODO: clip message
-
       const { data, error } = await supabaseClient.from("Message").insert({
         id: parseInt(message.id),
         user_id: parseInt(message.author.id),
@@ -29,7 +27,10 @@ export async function execute(interaction: Interaction) {
       });
 
       if (error) {
-        interaction.reply({ content: error.message, ephemeral: true });
+        interaction.reply({
+          content: `Database Error: ${error.message}`,
+          ephemeral: true,
+        });
       } else {
         interaction.reply({
           content: "The message has been clipped!",
