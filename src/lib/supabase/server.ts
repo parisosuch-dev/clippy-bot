@@ -14,7 +14,9 @@ export const createServer = async (guild: Guild) => {
 };
 
 export const getServers = async (): Promise<Server[]> => {
-  const { data, error } = await supabaseClient.from("Server").select("*");
+  const { data, error } = await supabaseClient
+    .from("Server")
+    .select("id::text, joined_at");
 
   if (error) {
     throw new Error(error.message);
@@ -23,7 +25,7 @@ export const getServers = async (): Promise<Server[]> => {
   return data as Server[];
 };
 
-export const deleteServer = async (id: number) => {
+export const deleteServer = async (id: string) => {
   const { data, error } = await supabaseClient
     .from("Server")
     .delete()

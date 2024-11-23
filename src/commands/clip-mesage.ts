@@ -5,6 +5,7 @@ import {
   Message,
 } from "discord.js";
 import supabaseClient from "../lib/supabase/supabase";
+import { createMessage } from "../lib/supabase/message";
 
 const messageExists = async (message: Message) => {
   const { data, error, count } = await supabaseClient
@@ -50,26 +51,12 @@ export async function execute(interaction: Interaction) {
         return;
       }
 
-      const { data, error } = await supabaseClient.from("Message").insert({
-        id: parseInt(message.id),
-        user_id: parseInt(message.author.id),
-        guild_id: parseInt(message.guild!.id),
-        channel_id: parseInt(message.channel.id),
-        created_at: message.createdAt.toISOString(),
-        content: message.content,
-      });
+      await createMessage(message);
 
-      if (error) {
-        interaction.reply({
-          content: `Database Error: ${error.message}`,
-          ephemeral: true,
-        });
-      } else {
-        interaction.reply({
-          content: "The message has been clipped!",
-          ephemeral: true,
-        });
-      }
+      interaction.reply({
+        content: "The message has been clipped!",
+        ephemeral: true,
+      });
     } catch (error) {
       console.error(error);
       await interaction.reply({

@@ -1,14 +1,14 @@
 export interface Server {
-  id: number;
+  id: string;
   joined_at: Date;
 }
 
 export interface Message {
-  id: number;
+  id: string;
   clipped_at: Date;
-  user_id: number;
-  guild_id: number;
-  channel_id: number;
+  user_id: string;
+  guild_id: string;
+  channel_id: string;
   context: string;
   created_at: Date;
 }

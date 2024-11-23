@@ -1,9 +1,22 @@
-import { Client } from "discord.js";
+import { Client, Guild } from "discord.js";
 import { deployCommands } from "./deploy-commands";
 import { config } from "./config";
 import { commands } from "./commands";
 import { Events } from "discord.js";
-import { createServer } from "./lib/supabase/server";
+import { createServer, deleteServer, getServers } from "./lib/supabase/server";
+
+// handle server discrepancies
+const handleServerDiscrepancies = async (actualServers: string[]) => {
+  // get server records
+  const servers = await getServers();
+
+  // remove every server that the bot is no longer in
+  for (const server of servers) {
+    if (!actualServers.includes(server.id.toString())) {
+      await deleteServer(server.id);
+    }
+  }
+};
 
 const client = new Client({
   intents: ["Guilds", "GuildMessages", "DirectMessages"],
@@ -13,7 +26,9 @@ const client = new Client({
 client.once(Events.ClientReady, () => {
   console.log("Discord bot is ready! 🤖");
 
-  // add and remove appropriate servers
+  const currentGuilds = client.guilds.cache.map((guild) => guild.id);
+
+  handleServerDiscrepancies(currentGuilds);
 });
 
 // on bot joining server
@@ -24,9 +39,10 @@ client.on(Events.GuildCreate, async (guild) => {
   await createServer(guild);
 });
 
-// on bot leaving server
-client.on(Events.GuildDelete, async () => {
+// on guild being deleted
+client.on(Events.GuildDelete, async (guild) => {
   // delete Server record from Server table
+  deleteServer(guild.id);
 });
 
 // on interaction creation
@@ -42,5 +58,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
     interaction.reply("There was an error finding the command to execute.");
   }
 });
+
+// every 10 minutes remove guilds that bot is no longer in
+setInterval(() => {
+  console.log("Checking servers...");
+  const currentGuilds = client.guilds.cache.map((guild) => guild.id);
+
+  handleServerDiscrepancies(currentGuilds);
+}, 600000);
 
 client.login(config.DISCORD_TOKEN);
