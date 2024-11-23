@@ -2,20 +2,35 @@ import { Client } from "discord.js";
 import { deployCommands } from "./deploy-commands";
 import { config } from "./config";
 import { commands } from "./commands";
+import { Events } from "discord.js";
+import { createServer } from "./lib/supabase/server";
 
 const client = new Client({
   intents: ["Guilds", "GuildMessages", "DirectMessages"],
 });
 
-client.once("ready", () => {
+// on bot online
+client.once(Events.ClientReady, () => {
   console.log("Discord bot is ready! 🤖");
+
+  // add and remove appropriate servers
 });
 
-client.on("guildCreate", async (guild) => {
+// on bot joining server
+client.on(Events.GuildCreate, async (guild) => {
   await deployCommands({ guildId: guild.id });
+
+  // insert Server record into Server table
+  await createServer(guild);
 });
 
-client.on("interactionCreate", async (interaction) => {
+// on bot leaving server
+client.on(Events.GuildDelete, async () => {
+  // delete Server record from Server table
+});
+
+// on interaction creation
+client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isCommand()) {
     return;
   }
