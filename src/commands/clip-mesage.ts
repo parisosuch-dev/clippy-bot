@@ -9,11 +9,10 @@ import { createMessage } from "../lib/supabase/message";
 
 const messageExists = async (message: Message) => {
   const { data, error, count } = await supabaseClient
-    .from("Message") // The name of your table
-    .select("id", { count: "exact" }) // Select 'id' to check existence, count results
-    .eq("id", parseInt(message.id)) // Match the 'id' column with the provided message.id
-    .limit(1); // Limit the query to 1 row for efficiency
-
+    .from("Message")
+    .select("id", { count: "exact" })
+    .eq("id", message.id)
+    .limit(1);
   if (error) {
     throw new Error(`Error checking if message exists: ${error.message}`);
   }
