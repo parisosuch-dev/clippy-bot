@@ -22,3 +22,14 @@ export const getServers = async (): Promise<Server[]> => {
 
   return data as Server[];
 };
+
+export const deleteServer = async (id: number) => {
+  const { data, error } = await supabaseClient
+    .from("Server")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+};
