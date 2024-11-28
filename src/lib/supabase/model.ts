@@ -1,3 +1,9 @@
+export interface Channel {
+  id: string;
+  server_id: string;
+  name: string;
+}
+
 export interface Server {
   id: string;
   joined_at: Date;
